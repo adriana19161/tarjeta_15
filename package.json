@@ -1,0 +1,85 @@
+{
+  "name": "invitacion-vaiolet",
+  "version": "1.0.0",
+  "description": "Invitación digital interactiva de los quince años de Vaiolet Nikol Jaelin.",
+  "homepage": "https://github.com/espinosagarciajhonedinson-droid/taller_Soluciones-Empresariales-S.A.S.-",
+  "author": "Invitación Vaiolet",
+  "private": true,
+  "main": "electron-main.cjs",
+  "desktopName": "invitacion-vaiolet",
+  "scripts": {
+    "start": "electron .",
+    "export:html": "node scripts/export-invitation.cjs",
+    "prepare:mobile": "node scripts/prepare-mobile-site.cjs",
+    "package:ios": "node scripts/package-ios-apps.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "dist:linux": "electron-builder --linux AppImage deb",
+    "dist:appimage": "electron-builder --linux AppImage",
+    "dist:deb": "electron-builder --linux deb",
+    "dist:windows": "electron-builder --win nsis",
+    "dist:macos": "electron-builder --mac dmg"
+  },
+  "devDependencies": {
+    "@fontsource/alex-brush": "^5.3.0",
+    "@fontsource/cinzel": "^5.3.0",
+    "@fontsource/montserrat": "^5.3.0",
+    "@fontsource/playfair-display": "^5.3.0",
+    "@fortawesome/fontawesome-free": "^7.3.1",
+    "canvas-confetti": "^1.9.4",
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3",
+    "html2canvas": "^1.4.1",
+    "qrcodejs": "^1.0.0"
+  },
+  "build": {
+    "appId": "com.vaiolet.invitacion15",
+    "productName": "Invitación Vaiolet",
+    "asar": true,
+    "files": [
+      "electron-main.cjs",
+      "electron-security.cjs",
+      "index.html",
+      "styles.css",
+      "app.js",
+      "manifest.json",
+      "assets/**/*",
+      "!assets/hero_block_bg_clean.jpg",
+      "!assets/hero_block_card.jpg",
+      "!assets/pistachio_roses_frame.png",
+      "!assets/pistachio_roses_full_frame.png",
+      "!assets/vaiolet_portrait_clean.png",
+      "!assets/vaiolet_portrait.jpg",
+      "!assets/icon-192.png"
+    ],
+    "directories": {
+      "output": "dist/desktop",
+      "buildResources": "assets"
+    },
+    "linux": {
+      "syncDesktopName": true,
+      "synopsis": "Invitación interactiva de los 15 años de Vaiolet",
+      "category": "Office",
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "assets/icon-512.png",
+      "maintainer": "Invitación Vaiolet",
+      "vendor": "Invitación Vaiolet"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.lifestyle"
+    }
+  }
+}

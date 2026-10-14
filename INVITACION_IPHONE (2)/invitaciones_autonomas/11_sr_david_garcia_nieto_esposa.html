@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file: data: blob:; script-src 'self' 'unsafe-inline' file:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: blob: file:; media-src 'self' data: blob: file:; font-src 'self' data: file:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <!-- Viewport optimizado para experiencia app inmersiva -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Mis 15 Años - Vaiolet Nikol Jaelin Espinosa Cantello</title>
+    <meta name="description" content="Invitación Oficial a la celebración de Mis 15 Años de Vaiolet Nikol Jaelin Espinosa Cantello. 7 de Noviembre, 7:00 PM.">
+    <meta property="og:title" content="Mis 15 Años - Vaiolet Nikol Jaelin">
+    <meta property="og:description" content="Acompáñame a celebrar una noche inolvidable de 15 Años. Haz clic para abrir tu tarjeta de invitación.">
+    <meta property="og:image" content="../assets/vaiolet_portrait.jpg">
+
+    <!-- ====== PWA / MODO APP NATIVA (sin barra del navegador) ====== -->
+    <link rel="manifest" href="11_sr_david_garcia_nieto_esposa.html.webmanifest">
+    <!-- Android: oculta barra del navegador al agregar a pantalla de inicio -->
+    <meta name="theme-color" content="#B88E39">
+    <meta name="mobile-web-app-capable" content="yes">
+    <!-- iOS: modo pantalla completa como app nativa -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Invitación Vaiolet">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/icon-180.png">
+    <!-- ============================================================= -->
+
+    <!-- Fuentes locales: conservan el diseño también sin conexión -->
+    <link rel="stylesheet" href="../assets/vendor/fonts.css">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="../assets/vendor/fontawesome.min.css">
+    
+    <!-- QRCode JS -->
+    <script src="../assets/vendor/qrcode.min.js"></script>
+    <!-- Canvas Confetti -->
+    <script src="../assets/vendor/confetti.browser.js"></script>
+
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+    <!-- Audio Player Element (La Princesa y el Sapo - Ma Belle Evangeline Español) -->
+    <audio id="bgMusic" loop preload="none">
+        <source src="../assets/princesa_y_el_sapo_espanol.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Floating Audio & Controls -->
+    <div class="floating-controls">
+        <button id="musicToggle" class="control-btn" type="button" title="Reproducir / Pausar Música" aria-label="Activar música" aria-pressed="false">
+            <i class="fas fa-music"></i>
+            <div class="sound-wave">
+                <span></span><span></span><span></span>
+            </div>
+        </button>
+        <button id="qrQuickBtn" class="control-btn" type="button" title="Mi Pase de Entrada QR" aria-label="Ver pase de entrada QR">
+            <i class="fas fa-qrcode"></i>
+        </button>
+    </div>
+
+    <!-- EXPERIENCIA DE SOBRE 3D (ENVELOPE OVERLAY) -->
+    <div id="envelopeOverlay" class="envelope-overlay" role="region" aria-label="Portada de la invitación">
+        <!-- Pétalos flotantes decorativos -->
+        <div class="floating-petals-bg">
+            <span class="petal p1">🌿</span>
+            <span class="petal p2">✦</span>
+            <span class="petal p3">🍃</span>
+            <span class="petal p4">✧</span>
+            <span class="petal p5">🌿</span>
+            <span class="petal p6">✦</span>
+        </div>
+
+        <div class="envelope-scene">
+            <!-- Texto superior -->
+            <div class="env-top-text">
+                <p class="env-label-small">Has recibido una</p>
+                <h2 class="env-title-elegant">Invitación Especial</h2>
+                <div class="env-divider"><span>✦</span></div>
+            </div>
+
+            <!-- SOBRE 3D -->
+            <div class="envelope-3d">
+                <!-- Solapa trasera (se ve detrás) -->
+                <div class="env-back-flap"></div>
+                <!-- Tarjeta que asoma desde dentro -->
+                <div class="env-card-inside">
+                    <div class="env-card-preview">
+                        <p class="env-card-script">Mis 15 Años</p>
+                        <p class="env-card-name">Vaiolet Nikol Jaelin</p>
+                        <p class="env-card-date">7 de Noviembre • 7:00 PM</p>
+                    </div>
+                </div>
+                <!-- Cuerpo del sobre -->
+                <div class="env-body">
+                    <div class="env-body-inner">
+                        <p class="env-address-label">Para ti o familia</p>
+                    </div>
+                </div>
+                <!-- Solapa frontal (se abre con rotateX) -->
+                <div class="env-front-flap">
+                    <img src="../assets/wax_seal.png" alt="Sello" class="env-wax-seal pulse">
+                </div>
+            </div>
+
+            <!-- Botón de apertura -->
+            <button id="openEnvelopeBtn" class="btn-open-invitation" type="button" aria-controls="invitationContent">
+                <i class="fas fa-envelope-open-text"></i>
+                <span>Abrir Invitación</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN INVITATION CARD CONTAINER -->
+    <div id="invitationContent" class="invitation-container locked">
+        <!-- Botón para volver al sobre -->
+        <button id="closeEnvelopeBtn" class="control-btn close-btn" type="button" title="Volver a la portada" aria-label="Volver a la portada" aria-controls="envelopeOverlay">
+            <i class="fas fa-envelope"></i>
+        </button>
+
+        <!-- HERO SECTION - PRIMER BLOQUE SEGÚN REFERENCIA -->
+        <header class="hero-section">
+            <div class="hero-bg-overlay"></div>
+            
+            <!-- TARJETA PRIMER BLOQUE FLORAL SEGÚN REFERENCIA -->
+            <div class="hero-card-frame">
+                <img src="../assets/hero_block_ref.jpg" alt="Mis 15 Años - Vaiolet Nikol Jaelin" class="hero-card-img">
+            </div>
+
+            <!-- DETALLES DE LA CELEBRANTE Y CONTEO REGRESIVO -->
+            <div class="hero-info-below">
+                <h2 class="celebrant-name gold-name">Vaiolet Nikol Jaelin</h2>
+                <h3 class="celebrant-lastname gold-lastname">Espinosa Cantello</h3>
+                
+                <p class="quote-text gold-quote">
+                    <i class="fas fa-quote-left"></i>
+                    Hay momentos en la vida que son irrepetibles, pero compartirlos con las personas que más quiero los hace inolvidables.
+                    <i class="fas fa-quote-right"></i>
+                </p>
+
+                <!-- COUNTDOWN TIMER -->
+                <div class="countdown-container">
+                    <h4 class="countdown-title">Faltan solo:</h4>
+                    <div id="countdown" class="countdown-grid">
+                        <div class="timer-box">
+                            <span id="days">00</span>
+                            <label>Días</label>
+                        </div>
+                        <div class="timer-box">
+                            <span id="hours">00</span>
+                            <label>Horas</label>
+                        </div>
+                        <div class="timer-box">
+                            <span id="minutes">00</span>
+                            <label>Minutos</label>
+                        </div>
+                        <div class="timer-box">
+                            <span id="seconds">00</span>
+                            <label>Segundos</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scroll-down-indicator">
+                <i class="fas fa-chevron-down bounce"></i>
+            </div>
+        </header>
+
+        <!-- SECCIÓN DE FECHA Y HORA -->
+        <section class="section-card date-time-section">
+            <div class="corner-rose corner-tl"></div>
+            <div class="corner-rose corner-br"></div>
+            
+            <div class="section-header">
+                <i class="far fa-calendar-alt section-icon"></i>
+                <h2>¿Cuándo y Dónde?</h2>
+            </div>
+
+            <div class="details-grid">
+                <div class="detail-card">
+                    <div class="detail-icon"><i class="fas fa-calendar-heart"></i></div>
+                    <h3>FECHA</h3>
+                    <p class="highlight-detail">Sábado, 7 de Noviembre</p>
+                    <p class="sub-detail">7 de Nov</p>
+                </div>
+
+                <div class="detail-card">
+                    <div class="detail-icon"><i class="far fa-clock"></i></div>
+                    <h3>HORA</h3>
+                    <p class="highlight-detail">7:00 PM</p>
+                    <p class="sub-detail">Puntualidad de Gala</p>
+                </div>
+            </div>
+
+            <!-- UBICACIÓN Y BOTÓN DE MAPA DIRECTO -->
+            <div class="location-box">
+                <div class="location-header">
+                    <i class="fas fa-map-marker-alt location-pin"></i>
+                    <div>
+                        <h3>Lugar de la Recepción</h3>
+                        <p>Chalet De La Novia - Ibagué, Tolima</p>
+                    </div>
+                </div>
+
+                <p class="location-desc">Haz clic en el botón a continuación para abrir la ubicación exacta directamente en Google Maps o en la aplicación de mapas de tu dispositivo:</p>
+
+                <div class="action-buttons-wrap">
+                    <a href="https://maps.app.goo.gl/2XmTqzVXpgpDR26Y8?" target="_blank" rel="noopener noreferrer" class="btn-location">
+                        <i class="fas fa-diamond-turn-right"></i>
+                        <span>Abrir Ubicación en Google Maps</span>
+                        <i class="fas fa-external-link-alt external-icon"></i>
+                    </a>
+                </div>
+
+                <!-- Preview Map Card -->
+                <div class="map-preview-card">
+                    <div class="map-placeholder">
+                        <i class="fas fa-map-marked-alt map-bg-icon"></i>
+                        <div class="map-info">
+                            <span><i class="fas fa-check-circle"></i> Enlace oficial verificado</span>
+                            <small>Click en el botón superior para navegar con GPS</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN CÓDIGO DE VESTIMENTA / RESTRICCIÓN DE COLOR VERDE -->
+        <section class="section-card dress-code-section">
+            <div class="dress-code-banner">
+                <div class="alert-icon-box">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h2>Código de Vestimenta</h2>
+                <p class="tag-style">Formal / Traje de Gala</p>
+
+                <div class="green-restriction-card">
+                    <div class="restriction-header">
+                        <i class="fas fa-exclamation-triangle warning-icon"></i>
+                        <h3>REGLA IMPORTANTE DE COLOR DE PRENDA</h3>
+                    </div>
+                    
+                    <div class="restriction-body">
+                        <p class="warning-text">
+                            <strong>POR FAVOR, EVITAR EL USO DE PRENDAS DE VESTIR DE COLOR VERDE, EN CUALQUIERA DE SUS TONALIDADES, TANTO CLARAS COMO OSCURAS.</strong>
+                        </p>
+                        
+                        <div class="prohibited-colors">
+                            <div class="color-swatch-banned">
+                                <div class="swatch-wrapper">
+                                    <div class="swatch pistachio-s"></div>
+                                    <i class="fas fa-ban ban-overlay"></i>
+                                </div>
+                                <span>Verde Claro / Pistacho</span>
+                            </div>
+                            <div class="color-swatch-banned">
+                                <div class="swatch-wrapper">
+                                    <div class="swatch emerald-s"></div>
+                                    <i class="fas fa-ban ban-overlay"></i>
+                                </div>
+                                <span>Verde Esmeralda</span>
+                            </div>
+                            <div class="color-swatch-banned">
+                                <div class="swatch-wrapper">
+                                    <div class="swatch darkgreen-s"></div>
+                                    <i class="fas fa-ban ban-overlay"></i>
+                                </div>
+                                <span>Verde Oscuro / Botella</span>
+                            </div>
+                        </div>
+
+                        <p class="restriction-note">
+                            <i class="fas fa-info-circle"></i> Los tonos verdes están reservados exclusivamente para la homenajeada y la ambientación del evento. ¡Agradecemos tu comprensión!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE PASE DIGITAL CON CÓDIGO QR ÚNICO -->
+        <section id="qrSection" class="section-card qr-section">
+            <div class="section-header">
+                <i class="fas fa-id-card section-icon"></i>
+                <h2>Tu Pase de Entrada Personalizado</h2>
+                <p class="section-subtitle">Presenta este código QR en la entrada del evento</p>
+            </div>
+
+            <div class="qr-ticket-card">
+                <div class="ticket-header">
+                    <span class="ticket-badge">PASE OFICIAL DE INVITADO</span>
+                    <h4>Mis 15 Años - Vaiolet Nikol Jaelin</h4>
+                </div>
+
+                <div class="ticket-body">
+                    <div class="guest-info-display">
+                        <h3 id="displayGuestName">Invitado(s)</h3>
+                        <div class="passes-count">
+                            <i class="fas fa-ticket-alt"></i>
+                            <span id="displayPassesCount">3 Invitados Confirmados</span>
+                        </div>
+                        
+                        <!-- NOTA ESPECIAL PARA FAMILIA QUINA (PERRO RAMON) O PERSONALIZADO -->
+                        <div id="specialPetNote" class="pet-note-box">
+                            <i class="fas fa-dog pet-icon"></i>
+                            <span><strong>Pase Especial:</strong> ¡Incluye a la mascota <strong>Ramón 🐶</strong>!</span>
+                        </div>
+                    </div>
+
+                    <div class="qr-code-wrapper">
+                        <div id="qrcode"></div>
+                        <span class="qr-code-id" id="displayQrCodeId">VAI-15-QUINA-3P-RAMON</span>
+                    </div>
+
+                    <div class="ticket-footer-info">
+                        <p><i class="fas fa-shield-alt"></i> Código Único e Intransferible</p>
+                    </div>
+                </div>
+
+                <div class="ticket-actions">
+                    <button id="downloadPassBtn" class="btn-primary">
+                        <i class="fas fa-download"></i> Guardar Pase Digital
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CRONOGRAMA DE LA FIESTA -->
+        <section class="section-card itinerary-section">
+            <div class="section-header">
+                <i class="fas fa-list-ol section-icon"></i>
+                <h2>Cronograma de la Noche</h2>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-time">07:00 PM</div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Recepción de Invitados</h3>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-time">08:00 PM</div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Entrada Triunfal & Vals de 15 Años</h3>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-time">09:30 PM</div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Cena Especial de Gala & Brindis</h3>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-time">10:30 PM</div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Fiesta & Hora Loca 🎭</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE CONFIRMACIÓN RSVP (WHATSAPP) -->
+        <section class="section-card rsvp-section">
+            <div class="section-header">
+                <i class="fab fa-whatsapp section-icon rsvp-icon"></i>
+                <h2>Confirmar Asistencia</h2>
+                <p>Por favor confirma tu presencia antes del 1 de Noviembre</p>
+            </div>
+
+            <form id="rsvpForm" class="rsvp-form">
+                <div class="form-group">
+                    <label for="rsvpName"><i class="fas fa-user"></i> Nombre de la Familia o Invitado:</label>
+                    <input type="text" id="rsvpName" required placeholder="Ej: Familia Quina" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="rsvpCount"><i class="fas fa-users"></i> Número de Personas que Asistirán:</label>
+                    <input type="number" id="rsvpCount" min="1" max="10" value="3" required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="rsvpStatus"><i class="fas fa-check-circle"></i> ¿Asistirás al evento?</label>
+                    <select id="rsvpStatus" class="form-input">
+                        <option value="confirmado">¡Sí, ahí estaremos con mucho gusto! 🎉</option>
+                        <option value="disculpa">Lamentablemente no podremos asistir 💔</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="rsvpMessage"><i class="fas fa-heart"></i> Mensaje para Vaiolet (Opcional):</label>
+                    <textarea id="rsvpMessage" rows="3" placeholder="Escribe unas palabras de felicitación..." class="form-input"></textarea>
+                </div>
+
+                <button type="submit" class="btn-whatsapp">
+                    <i class="fab fa-whatsapp"></i> Confirmar Asistencia por WhatsApp
+                </button>
+            </form>
+        </section>
+
+        <!-- LLUVIA DE SOBRES -->
+        <section class="section-card gifts-section">
+            <div class="gift-box">
+                <i class="fas fa-envelope-open-text gift-icon"></i>
+                <h2>Lluvia de Sobres 💌</h2>
+                <p class="gift-text">
+                    Tu presencia es el mejor regalo para mí en este día tan especial.
+                </p>
+                <div class="gift-details">
+                </div>
+            </div>
+        </section>
+
+        <!-- NOTA DE ADVERTENCIA - ACCESO AL EVENTO -->
+        <div class="entry-warning-note">
+            <div class="warning-note-header">
+                <div class="warning-note-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="warning-note-title">Información Importante de Acceso</div>
+            </div>
+            <div class="warning-note-body">
+                <div class="warning-item">
+                    <i class="fas fa-qrcode warning-item-icon"></i>
+                    <p><strong>SOLO ingresarán al evento</strong> quienes estén en el listado oficial y presenten su <strong>código QR</strong> personalizado en la entrada.</p>
+                </div>
+                <div class="warning-item">
+                    <i class="fas fa-user-times warning-item-icon"></i>
+                    <p><strong>Por favor NO traer personas adicionales</strong> que no estén incluidas en esta invitación. El acceso es estrictamente para los invitados confirmados.</p>
+                </div>
+                <div class="warning-item">
+                    <i class="fas fa-heart warning-item-icon"></i>
+                    <p>¡Gracias por tu comprensión y por ayudarnos a hacer de esta noche un evento especial para Vaiolet! 🌸</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer-section">
+            <div class="footer-rose-bg"></div>
+            <h3 class="footer-title-gold">¡Te esperamos para celebrar juntos!</h3>
+            <p class="footer-celebrant footer-gold">Vaiolet Nikol Jaelin Espinosa Cantello</p>
+            <p class="footer-date footer-date-gold">07 . 11 . 2026 • 7:00 PM</p>
+        </footer>
+
+    </div>
+
+    <!-- LIBRERÍAS EXTERNAS PARA DESCARGA DE IMAGEN -->
+    <script src="../assets/vendor/html2canvas.min.js"></script>
+
+    <!-- DATOS DEL INVITADO INYECTADOS POR GENERADOR -->
+    <script>
+        // VARIABLE_PLANTILLA
+        window.CURRENT_GUEST = {
+    "name": "Sr. David Garcia Nieto & Esposa",
+    "passes": 2,
+    "hasPet": false,
+    "petName": "",
+    "note": "",
+    "code": "VAI15-SRDAVIDGARCI-2P-011"
+};
+        window.PREGENERATED_QR = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAtoAAALaCAIAAACAjGNkAAAXwElEQVR4nO3cMbLbzHZGUdN15+LQw/CYPQyHHg2cKvirS1ar3z4NrpWqyAsCILULwfd5nuffAAA6/14fAADw7eQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAMTkCAMTkCAAQkyMAQEyOAAAxOQIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEDsZ+fF//lf//G3jmOI//nv/1386/rzrl9bOXeNbjxX1R1bnaudz3vuGu183nOfqPqmrJ07V9V5XquO+Zwbj3nHztX3dAQAiMkRACAmRwCAmBwBAGJyBACIyREAICZHAICYHAEAYnIEAIhtrbKuvW+ltFob3PG+q1CZuTW5fm21rFq9843fo2/7Lrzvnc+Zeczn7lhPRwCAmBwBAGJyBACIyREAICZHAICYHAEAYnIEAIjJEQAgJkcAgNjBVda1c8tu37afeG7F8n17oDN3dc9ttu6YeX2rO7a668593uquO3dUazPXfnfc+H/omqcjAEBMjgAAMTkCAMTkCAAQkyMAQEyOAAAxOQIAxOQIABCTIwBALFtlvdHMJcq1atOzWgxc/91vW1ZdqzYu127c892568658Vdl5gbx2rnz/G08HQEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiMkRACAmRwCAmBwBAGJWWf8fZm4C7uwYftvW5LlPVF2FG6/gjpl33Y4bVzt3zsa37TXz+zwdAQBicgQAiMkRACAmRwCAmBwBAGJyBACIyREAICZHAICYHAEAYtkq6407dzvHfOMC5tq5LdG1mcuqO+9cvbZaovy2hdOZG6Y7f7f6Jay+CzvvfM7Mu32HpyMAQEyOAAAxOQIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEDs4Crr+3ZIZ65Yvm+bb+fzeu3vv3bHjffkjed57dzS6I5z5/nc390xc8H2Rp6OAAAxOQIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAsa1V1pnbizPN3OU8t4H4bapNz2qXs9q4PPfatZnXd+Zr12bekzN3db+NpyMAQEyOAAAxOQIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEDs8zxPfQx/2c7qX7WRN3Op8NzW5LlrdO6Y127c1eVXM/dtZ/7d6leleu05N56Nc2fS0xEAICZHAICYHAEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiMkRACD2Ux/AP9vZfbtxX29Hter4vvXbnaOauQh54ybvzAXbc+9c7erO3PO98d44Z+aS7DmejgAAMTkCAMTkCAAQkyMAQEyOAAAxOQIAxOQIABCTIwBATI4AALHP8zx//OJzS3bnNh93zNy43Pm7a9UGYrWtOdO3LTPe6MZr5Hs0X7UkW21MezoCAMTkCAAQkyMAQEyOAAAxOQIAxOQIABCTIwBATI4AADE5AgDEfs699bctq57zbZuPO6o9wXMbl+/bAq62Jtd2zsaN+8U3LkHv/N2Z5+qcG7etPR0BAGJyBACIyREAICZHAICYHAEAYnIEAIjJEQAgJkcAgJgcAQBiB1dZ186twq3fudp83FFtArpGvzq3+ThzIXHHzKXRc/fVzBXptequm/lrduOG6ft4OgIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAMTkCAMS2VllnbiC+bwVv5/POPBs7R7WzcHrj4me1gGmJ8vdV26kz11Hddber/of1dAQAiMkRACAmRwCAmBwBAGJyBACIyREAICZHAICYHAEAYnIEAIhtrbKuVRt51a7fjXuCM89VtTN7bnd1552rvddzx1zt266dW6K8cUW6OubqF3jt3B17471xjqcjAEBMjgAAMTkCAMTkCAAQkyMAQEyOAAAxOQIAxOQIABCTIwBA7PM8zx+/uNpP3DFz9a8yc2ty5lLhzM9b7Z/O/LxrN25cVt+FaoPYJ5qg+pZ5OgIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAMTkCAMSuXGWduQg5cz3zRjPP5Mx3ft9rd9z4Tal2om+8gjduPc/cbJ357fZ0BACIyREAICZHAICYHAEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiG2tsq7NXKNb+7blvpkLp+fMvCdvXDee6X2bnjuqs7H2bb8qazfek1ZZAYDXkiMAQEyOAAAxOQIAxOQIABCTIwBATI4AADE5AgDE5AgAENtaZZ25VFhtXK45G3/LuVXHnb+7Y+Y1qtYzZ+5y3riAOfMa7fzdHTdewZ13Xpu5BuvpCAAQkyMAQEyOAAAxOQIAxOQIABCTIwBATI4AADE5AgDE5AgAEPup/vDMtcEbVZue71uEXDu3Rfhte68zr2D1zuurP/O+2vmGVq89p/q8azPP1ZqnIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAMTkCAMTkCAAQkyMAQOzzPE/yh2euwu2s4M1cR107twk4853PHdU5M4+5ur5rM7+/71vdnflNudHMhfHqqDwdAQBicgQAiMkRACAmRwCAmBwBAGJyBACIyREAICZHAICYHAEAYj/n3vrcstvMncrqmKuzUf3dnfNcmXnH7rjxmCvVjvCNvznV/xrnrI+qOuaZv0iejgAAMTkCAMTkCAAQkyMAQEyOAAAxOQIAxOQIABCTIwBATI4AALGtVdYbFzB3nFvQm3km16rtxR0zdxur7cUd71verNZR177tqL5tzfl9V3CHpyMAQEyOAAAxOQIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBsa5V1R7WRZ03yb6m2F29csF278d44t9s4cy+y+kQ777zz2hu/Zed+kaq7fce5dz53NjwdAQBicgQAiMkRACAmRwCAmBwBAGJyBACIyREAICZHAICYHAEAYlurrDPXBtd/98Z9vbWdTzRz8bPaE9wxc12x2jBdq75l7vYJZt6T1Xo1v/J0BACIyREAICZHAICYHAEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiH2e5/njF5/b16uW+75tMfDc1uTO391xbqN25rl63zVam7kyXP3W3bgGW30HZ+757rjxe7Tm6QgAEJMjAEBMjgAAMTkCAMTkCAAQkyMAQEyOAAAxOQIAxOQIABA7uMp6zsy912rJzgbi7//dG3dX16rv4I5q3Xjtxl+zb/NtC7ZrM39jd3g6AgDE5AgAEJMjAEBMjgAAMTkCAMTkCAAQkyMAQEyOAAAxOQIAxH7qA/hn53bfzq12ztzI23nnc7urlZmbrdVdt+N9+5g7Zh7Vjddo5k702rm/+217zZ6OAAAxOQIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAsc/zPH/84nNrdNVK6czXzlRtPq5Vi5Dn3vnGO6dahJy5NHpO9T2auX96zrfdVxVPRwCAmBwBAGJyBACIyREAICZHAICYHAEAYnIEAIjJEQAgJkcAgNjPzovPLcpVK3jV6t+OavHzxqu/Y+a5Wpu5fntu3/Z9u7rftue7Vn3eG1dob7yvPB0BAGJyBACIyREAICZHAICYHAEAYnIEAIjJEQAgJkcAgJgcAQBiW6usa9+2ZDdz527nbMxcdawWe9eqv1uZeV9VG8TV+u25v3vu+q7NvPrnzNwBr47K0xEAICZHAICYHAEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiMkRACD2eZ7nj19cbbe9b9G1+kQzj3lt5o7huUXXG69R5dyZ3HHjjnB1zDPfeefvrs28Y9fO/ap4OgIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAMTkCAMS2VlnPmbm8ufZtK6XftjX5vnXUG79l58zcej7nxt+rG9erKzN/c9Y8HQEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiMkRACAmRwCAmBwBAGLZKuuNC5jVcp93nmDmJ6oWbHecO1fvu5/fd9etzVxV3jHzezRzs9XTEQAgJkcAgJgcAQBicgQAiMkRACAmRwCAmBwBAGJyBACIyREAIPaz8+JzS3bVO5/buNxRre/t7Bjaqfxbdj7Rjd+jc2dy5oLtzG3NmXfd2o2bvNUy8lp1VJ6OAAAxOQIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAsc/zPH/84mpPsNqMm/l316rz/L61QWdj/t+t9kAr1Q7pOTPvyR2O+fd5OgIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAMTkCAMS2Vll32E/81cy10HNmrknOvAozr+BMN95X1d+duSM88+/e6MZr5OkIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAMTkCAMTkCAAQ+9l58bklu3OLcuesz8aNC4nVEuXa+1ZKZ262zjzPN+6u7hzz+777M5dVZ/7Wrc38X2OHpyMAQEyOAAAxOQIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBsa5X1fWuSO1t11c7dzOXNc2fy3BWceSZ3zNyarLZEz+2fzlxH3THzW/a+zeWZqkVXT0cAgJgcAQBicgQAiMkRACAmRwCAmBwBAGJyBACIyREAICZHAIDY53meQ29946rjOTMXP29c7Zx5Js+ZebffeNfNXPu98fre+LuxVt3Pazf+1u2cDU9HAICYHAEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiMkRACAmRwCA2M+5tz63gVi9dsfMVceZ23wzr9HMzda1amvSNZrgxuXctepXZf3ac79XM/e4z/F0BACIyREAICZHAICYHAEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiG2tslYbiNVe5Lldvx0ztxdnft61mTukN24+nlMt9q7tnKvqfp55zDtu/Kac+/Wu3nnnPHs6AgDE5AgAEJMjAEBMjgAAMTkCAMTkCAAQkyMAQEyOAAAxOQIAxLZWWc9tep5TrYXOXNDbOeZq33bnnc+pFiHPvXbnnc99F25ckl2rFjBnmrl/Wnnf3b7m6QgAEJMjAEBMjgAAMTkCAMTkCAAQkyMAQEyOAAAxOQIAxOQIABD7PM9z6K2r5c1q07P6ROe2+c5tPt64NVkdc3VPrlWLkNW98W2/ZjtmHvPMa3Tu78783VjzdAQAiMkRACAmRwCAmBwBAGJyBACIyREAICZHAICYHAEAYnIEAIhtrbKe24x73w7p2o2rf+ec2xOcuVM58/PeuOh64x17zswreO7/hZlm/uasVb8bno4AADE5AgDE5AgAEJMjAEBMjgAAMTkCAMTkCAAQkyMAQEyOAACxn50XV7urM197zrmjmrkWeuP24o7q857bbZx5BW/cx6zM3Jldq5a+Z/4Cr838/no6AgDE5AgAEJMjAEBMjgAAMTkCAMTkCAAQkyMAQEyOAAAxOQIAxLZWWW80c41uzZ7g73vfmuTa+iqcu59n7vnuvPPazt+9cS303DtXG9PnXnvOjXfsDk9HAICYHAEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiMkRACAmRwCA2AtXWavFwPctUVaq3cZzi64zN2qrs7Hzd2duAa9Va6E7Z3Lmr+iNv8BrM1fCz12jNU9HAICYHAEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiMkRACAmRwCA2Od5nkNvfW677ca9yHNmrlhWq47f9s6Vb1v7ra7CufM88746Z+Yv4bctbq95OgIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAMTkCAMR+dl58buVw/dpz73zj7uo55/YEZ26YVguJN/7d6p3Xzn1Dq9+N6hdp5hrszlWYuck78/+U6m73dAQAiMkRACAmRwCAmBwBAGJyBACIyREAICZHAICYHAEAYnIEAIh9nuc59NYzl+yqbb73rcG+b7exeucdMz9vdW/MvCcrM5eCqw3itZkrpTPXq89dBU9HAICYHAEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiMkRACAmRwCA2NYq68zNx29bOJ25r1cd1cy/W911azOPufru3/g9qpaCZ97P59z4TdlRfSJPRwCAmBwBAGJyBACIyREAICZHAICYHAEAYnIEAIjJEQAgJkcAgNjWKutatdm6o9oD3TFzWfWc920gnjNz+3jmmvOOG7/7M6/+zOu7Y+bdPvMqeDoCAMTkCAAQkyMAQEyOAAAxOQIAxOQIABCTIwBATI4AADE5AgDEfs699Y2LgTtuXHQ9d67et4/5bffzzpk8t0R57rU3/m5Uqrtu5ndw7cZ7suLpCAAQkyMAQEyOAAAxOQIAxOQIABCTIwBATI4AADE5AgDE5AgAEDu4yrp2bm+u2terllXXZu763bidWpm5B3pu4/LGe2PmNu6Nq503XqMd5+72mb9ma56OAAAxOQIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAsc/zPPUx/INqi3DmIuQ557Y1b9x7nbmtuVZtEK9Vi5DvOxvVd/DcL8OOmb8q7zvPO3bOhqcjAEBMjgAAMTkCAMTkCAAQkyMAQEyOAAAxOQIAxOQIABCTIwBALFtlrfZAqxW8G1dZKzduPt64rjjz8848qrXqmHfeeW3mr+jajSvSa9UxV98FT0cAgJgcAQBicgQAiMkRACAmRwCAmBwBAGJyBACIyREAICZHAIDYz7m33ll2O/fanc24mduaMzc9b1zOvXHFslqTrBYhZ+6fvs+37a7O/Lw7ql+zHZ6OAAAxOQIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAsc/zPH/8Yit4v5p5zOdWLM/93R03LkKuVd+UmZ937cbvoM/7+6/dMfNsrM38n25t5/N6OgIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAMTkCAMR+qj+8s91WLX5Wbty4rBZ7Z5q52XrunWeuSVY70dW68betwdpd/dc49wvs6QgAEJMjAEBMjgAAMTkCAMTkCAAQkyMAQEyOAAAxOQIAxOQIABDLVlnXZi4Gnluje99+4o27qzO3Js/Z+UQ3LmCeU+29vu93Y23m79XMX4ZzW7Hnfr09HQEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiMkRACAmRwCAmBwBAGKf53nqY7hGtXJ448LpuaOaea5uPKq1c3eO79GEv1up7smZ+7Y73rcG6+kIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAMTkCAMTkCAAQ21plnbkKt+PGBb2Ze5HftmNYbaeuzdww9bvxrzHz+ztz/Xbtxu/RzKuw5ukIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAMTkCAMTkCAAQ+zn31jcuFZ577drMc7VzVNUu58y1wWqj9sY79n1LlNUxz/xVmak6VzNXaCuejgAAMTkCAMTkCAAQkyMAQEyOAAAxOQIAxOQIABCTIwBATI4AALGDq6xr79uLPOfcpme13HfuqKrPe24fszobM1cdb9xdPWfm9/fca89d32on+pwbN3k9HQEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiMkRACAmRwCAmBwBAGLZKuv77CwGnnvtzKPaMXN1d+a5qlYsqzt27dy+7Y335M7fre72apN35ud9H09HAICYHAEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiMkRACAmRwCAmFXWv6Za3lyr1hWrPcEbz/O5d642PddmrlhWd87MPd8dM+/JmUd17p1vXM32dAQAiMkRACAmRwCAmBwBAGJyBACIyREAICZHAICYHAEAYnIEAIhlq6zVauc5M5c3z20Rvm+HdO3GldLqKty4rHru767f+cbv/jkzP++N52pH9Xk9HQEAYnIEAIjJEQAgJkcAgJgcAQBicgQAiMkRACAmRwCAmBwBAGIHV1nPbcbNVK06zlzt3Hlttcw4846t1m93VKuO55Zkv22Xc23mb92NRzXzrquOytMRACAmRwCAmBwBAGJyBACIyREAICZHAICYHAEAYnIEAIjJEQAg9nmepz4GAOCreToCAMTkCAAQkyMAQEyOAAAxOQIAxOQIABCTIwBATI4AADE5AgDE5AgAEJMjAEBMjgAAMTkCAMTkCAAQkyMAQEyOAAAxOQIAxOQIABCTIwBA7P8ALdZ+LHFLHoQAAAAASUVORK5CYII=";
+    </script>
+
+    <script src="../app.js"></script>
+
+    <!-- ====== BANNER INSTALACIÓN PWA / PANTALLA COMPLETA ====== -->
+    <!-- Se muestra solo si el usuario NO está en modo standalone -->
+    <div id="installBanner" class="install-banner hidden" role="banner" aria-live="polite">
+        <div class="install-banner-content">
+            <span class="install-icon">📲</span>
+            <div class="install-text">
+                <strong>Abre sin barra del navegador</strong>
+                <span id="installHint">Toca <strong>⋮ → Agregar a pantalla de inicio</strong> para la experiencia completa</span>
+            </div>
+            <button id="installDismiss" class="install-dismiss" type="button" aria-label="Cerrar">✕</button>
+        </div>
+    </div>
+
+    <script>
+    // ── Registro del Service Worker (cache offline) ──────────────────────────
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('../sw.js', { scope: '../' })
+                .then(reg => console.info('Service Worker registrado:', reg.scope))
+                .catch(err => console.error('No se pudo registrar el Service Worker:', err));
+        });
+    }
+
+    // ── Mostrar banner de instalación si NO está en modo standalone ──────────
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+        || window.navigator.standalone === true;
+
+    const isDesktopApp = navigator.userAgent.toLowerCase().includes(' electron/');
+    if (!isStandalone && !isDesktopApp) {
+        const banner = document.getElementById('installBanner');
+        const hintEl  = document.getElementById('installHint');
+        const dismiss = document.getElementById('installDismiss');
+
+        // Detectar plataforma para personalizar el mensaje
+        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        if (isIOS && hintEl) {
+            hintEl.innerHTML = 'Toca <strong>□↑ Compartir → Añadir a pantalla de inicio</strong>';
+        } else if (!window.isSecureContext && hintEl) {
+            hintEl.textContent = 'Abre la invitación desde un enlace HTTPS para instalarla como app sin barras del navegador.';
+        }
+
+        // Mostrar el banner 3 segundos después de cargar (no interrumpir la primera impresión)
+        setTimeout(() => {
+            if (banner && !sessionStorage.getItem('installDismissed')) {
+                banner.classList.remove('hidden');
+            }
+        }, 3000);
+
+        // Botón cerrar
+        if (dismiss) {
+            dismiss.addEventListener('click', () => {
+                banner.classList.add('hidden');
+                sessionStorage.setItem('installDismissed', '1');
+            });
+        }
+
+        // Prompt nativo de instalación (Chrome/Android)
+        let deferredPrompt = null;
+        const content = document.querySelector('.install-banner-content');
+        const installBtn = document.createElement('button');
+        installBtn.className = 'install-native-btn';
+        installBtn.type = 'button';
+        installBtn.textContent = 'Instalar app';
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (hintEl) {
+                hintEl.innerHTML = 'Instala para abrirla como una app, sin barra del navegador';
+            }
+            if (content && !installBtn.isConnected) content.insertBefore(installBtn, dismiss);
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+
+            installBtn.disabled = true;
+            try {
+                deferredPrompt.prompt();
+                const choice = await deferredPrompt.userChoice;
+                if (choice.outcome === 'accepted' && banner) banner.classList.add('hidden');
+            } catch (error) {
+                console.error('No se pudo iniciar la instalación de la invitación:', error);
+                if (hintEl) hintEl.textContent = 'Usa el menú del navegador y elige «Añadir a pantalla de inicio».';
+            } finally {
+                deferredPrompt = null;
+                installBtn.remove();
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            if (banner) banner.classList.add('hidden');
+        });
+    }
+    </script>
+</body>
+</html>

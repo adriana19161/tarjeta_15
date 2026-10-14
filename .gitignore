@@ -1,0 +1,9 @@
+node_modules/
+dist/desktop/linux-unpacked/
+dist/desktop/win-unpacked/
+dist/desktop/mac/
+dist/desktop/builder-debug.yml
+dist/desktop/*.blockmap
+dist/desktop/*.AppImage
+dist/desktop/*.deb
+__pycache__/
