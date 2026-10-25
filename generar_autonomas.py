@@ -4,6 +4,7 @@ import re
 import unicodedata
 import base64
 import io
+import mimetypes
 import qrcode
 from PIL import Image
 
@@ -38,6 +39,26 @@ def generate_qr_base64(data_dict):
 def inline_vendor_script(html, script_tag, vendor_file):
     script = open(vendor_file, "r", encoding="utf-8").read()
     return html.replace(script_tag, f"<script>\n{script}\n</script>")
+
+def inline_vendor_stylesheet(html, link_tag, vendor_file):
+    with open(vendor_file, "r", encoding="utf-8") as stylesheet_file:
+        stylesheet = stylesheet_file.read()
+
+    def inline_asset(match):
+        asset_url = match.group(2)
+        if asset_url.startswith(("data:", "http://", "https://")):
+            return match.group(0)
+
+        asset_path = os.path.normpath(os.path.join(os.path.dirname(vendor_file), asset_url))
+        with open(asset_path, "rb") as asset_file:
+            encoded_asset = base64.b64encode(asset_file.read()).decode("ascii")
+        mime_type = mimetypes.guess_type(asset_path)[0] or "application/octet-stream"
+        return f'url("data:{mime_type};base64,{encoded_asset}")'
+
+    stylesheet = re.sub(r'url\((["\']?)([^)]+?)\1\)', inline_asset, stylesheet)
+    if link_tag not in html:
+        raise ValueError(f"No se encontró la hoja de estilos esperada: {link_tag}")
+    return html.replace(link_tag, f"<style>\n{stylesheet}\n</style>")
 
 def remove_install_banner(html):
     html, banner_count = re.subn(
@@ -128,10 +149,23 @@ guests = [
     {"id": 40, "name": "Dairo Oviedo Moreno", "passes": 1},
     {"id": 41, "name": "Juan David Gonzales", "passes": 1},
     {"id": 42, "name": "Carol Isabela Sierra", "passes": 1},
-    {"id": 43, "name": "Miguel Angel Espinosa & Angela Palma", "passes": 2}
+    {"id": 43, "name": "Miguel Angel Espinosa & Angela Palma", "passes": 2},
+    {"id": 44, "name": "Yolanda Arias", "passes": 1},
+    {"id": 45, "name": "Juana Arana García", "passes": 1},
+    {"id": 46, "name": "Viviana Cobos & Laura Romero", "passes": 2},
+    {"id": 47, "name": "Andrés Cobos García", "passes": 1},
+    {"id": 48, "name": "Alejandro Romero Cobos", "passes": 1},
+    {"id": 49, "name": "Paola Tau", "passes": 1},
+    {"id": 50, "name": "Cielo Valentina Almonacid", "passes": 1},
+    {
+        "id": 51,
+        "name": "Alberto Bonilla, Dilia Ortega & Sofia",
+        "passes": 3,
+        "confirmation_url": "https://docs.google.com/forms/d/e/1FAIpQLScKWUi7P4aejnbv4NrVak4d5YYn8zl5rTPM3tkbWC-gI7PfOg/viewform?usp=header"
+    }
 ]
 
-def generate_autonomous_invitations():
+def generate_autonomous_invitations(guest_ids=None):
     base_dir = "/home/jhonespinosa/tarjetas_15"
     assets_dir = os.path.join(base_dir, "assets")
     output_dir = os.path.join(base_dir, "invitaciones_autonomas")
@@ -203,7 +237,11 @@ def generate_autonomous_invitations():
     html_template = html_template.replace('<link rel="stylesheet" href="styles.css">', f'<style>\n{css_content}\n</style>')
     html_template = html_template.replace('<script src="app.js"></script>', f'<script>\n{js_content}\n</script>')
 
+    generated_count = 0
     for guest in guests:
+        if guest_ids is not None and guest["id"] not in guest_ids:
+            continue
+
         code_clean = re.sub(r'[^A-Z0-9]', '', clean_filename(guest['name']).upper())[:12]
         unique_code = f"VAI15-{code_clean}-{guest['passes']}P-{guest['id']:03d}"
 
@@ -220,6 +258,8 @@ def generate_autonomous_invitations():
             "note": pet_note,
             "code": unique_code
         }
+        if "confirmation_url" in guest:
+            guest_obj["confirmationUrl"] = guest["confirmation_url"]
 
         qr_data = {
             "evento": "Mis 15 Años - Vaiolet Nikol Jaelin Espinosa Cantello",
@@ -238,15 +278,39 @@ def generate_autonomous_invitations():
 
         filename = f"{guest['id']:02d}_{clean_filename(guest['name'])}.html"
         new_html = new_html.replace("{guest_manifest}", f"{filename}.webmanifest")
+        if "confirmation_url" in guest:
+            new_html = inline_vendor_stylesheet(
+                new_html,
+                '<link rel="stylesheet" href="../assets/vendor/fonts.css">',
+                os.path.join(assets_dir, "vendor", "fonts.css")
+            )
+            new_html = inline_vendor_stylesheet(
+                new_html,
+                '<link rel="stylesheet" href="../assets/vendor/fontawesome.min.css">',
+                os.path.join(assets_dir, "vendor", "fontawesome.min.css")
+            )
+            new_html = new_html.replace(
+                f'<link rel="manifest" href="{filename}.webmanifest">\n',
+                ""
+            )
+            new_html = re.sub(
+                r'    <script>\n    // ── Registro del Service Worker.*?\n    </script>\n',
+                "",
+                new_html,
+                count=1,
+                flags=re.DOTALL
+            )
+            new_html = re.sub(r'[ \t]+(?=\n)', "", new_html)
         filepath = os.path.join(output_dir, filename)
 
         with open(filepath, "w", encoding="utf-8") as out_f:
             out_f.write(new_html)
 
         write_guest_manifest(output_dir, filename)
+        generated_count += 1
         print(f"📦 Autónoma -> {filename}")
 
-    print(f"\n🎉 ¡{len(guests)} invitaciones autónomas regeneradas con éxito en /invitaciones_autonomas/!")
+    print(f"\n🎉 ¡{generated_count} invitaciones autónomas generadas con éxito en /invitaciones_autonomas/!")
 
 if __name__ == "__main__":
     generate_autonomous_invitations()
