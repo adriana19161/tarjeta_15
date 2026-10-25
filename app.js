@@ -373,10 +373,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!rsvpForm) return;
+        const confirmationUrl = currentGuestData.confirmationUrl;
+        const submitBtn = rsvpForm.querySelector('button[type="submit"]');
+        if (confirmationUrl) {
+            rsvpForm.querySelectorAll('.form-group').forEach(group => {
+                group.hidden = true;
+            });
+            if (submitBtn) {
+                submitBtn.classList.remove('btn-whatsapp');
+                submitBtn.innerHTML = '<i class="fas fa-clipboard-check"></i> Abrir formulario de confirmación';
+            }
+            const sectionIcon = document.querySelector('.rsvp-icon');
+            if (sectionIcon) {
+                sectionIcon.classList.remove('fab', 'fa-whatsapp');
+                sectionIcon.classList.add('fas', 'fa-clipboard-check');
+            }
+        }
+
         rsvpForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const submitBtn  = rsvpForm.querySelector('button[type="submit"]');
+            if (confirmationUrl) {
+                const link = document.createElement('a');
+                link.href = confirmationUrl;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                return;
+            }
+
             const origHTML   = submitBtn.innerHTML;
             submitBtn.innerHTML  = '<i class="fas fa-spinner fa-spin"></i> Preparando confirmación...';
             submitBtn.disabled   = true;

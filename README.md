@@ -1,6 +1,6 @@
 # Invitación digital de Vaiolet
 
-La página original, sus 42 invitaciones personalizadas y sus generadores se conservan. El proyecto incluye ahora una PWA, una app de escritorio Electron para Linux y una exportación HTML autocontenida.
+La página original, sus 43 invitaciones personalizadas y sus generadores se conservan. Se añadió una invitación autónoma para Alberto Bonilla, Dilia Ortega & Sofia, con tres pases y confirmación mediante Google Forms. El proyecto incluye ahora una PWA, una app de escritorio Electron para Linux y una exportación HTML autocontenida.
 
 ## Invitaciones personalizadas
 
